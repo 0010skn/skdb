@@ -1,0 +1,11 @@
+[package]
+name = "skdb"
+version = "0.1.0"
+edition = "2021"
+description = "A simple database implemented in Rust."
+repository = "https://github.com/example-user/skdb"
+license-file = "LICENSE"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
