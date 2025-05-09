@@ -1,0 +1,36 @@
+// Test queries for skdb main execution
+
+// Verify updates
+#.user[0].name
+#.config[key1].gold
+#.minimal_user[0].data
+
+// Verify additions and subsequent updates
+#.user[2].name
+#.user[2].id
+#.user[3].name
+#.user[3].id
+
+// Original queries to ensure no regressions
+#.config[key1].time
+#.user[0].c.gold
+#.user_ref_config[0].conf_key.value
+#.project_config.name
+#.names[china].c_ref.content_val
+
+// Queries for new tables from #复制结构 and #引用
+#.cloned_table[0].colA
+#.cloned_table[1].colB
+#.other_original_table[0].value
+// #.other_original_table[1].value // This key doesn't exist in referenced data
+#.another_table[0].ref_to_cloned.colA
+#.another_table[1].ref_to_other.value
+
+// Queries for newly added tables from extra files (using imported names)
+#.regions_imported[0].name
+#.regions_imported[1].population
+#.products_imported[P101].category
+#.products_imported[P102].product_name
+
+// Query potentially null field
+#.user[2].c
