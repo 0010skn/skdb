@@ -1,0 +1,56 @@
+name: Build Multi-Platform Binaries
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }} (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact_name: sk-runtime-linux-x86_64
+            binary_name: sk-runtime
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            artifact_name: sk-runtime-macos-x86_64
+            binary_name: sk-runtime
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact_name: sk-runtime-windows-x86_64.exe # Corrected artifact name for Windows
+            binary_name: sk-runtime.exe
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 # Using v4 as it's a newer stable version
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: ${{ matrix.target }} # Ensure the target is available
+
+      - name: Build binary
+        run: cargo build --release --target ${{ matrix.target }} --bin sk-runtime
+
+      - name: Prepare artifact path
+        id: prepare_artifact
+        run: |
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            echo "ARTIFACT_PATH=target/${{ matrix.target }}/release/${{ matrix.binary_name }}" >> $GITHUB_ENV
+          else
+            echo "ARTIFACT_PATH=target/${{ matrix.target }}/release/${{ matrix.binary_name }}" >> $GITHUB_ENV
+          fi
+        shell: bash
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4 # Using v4 as it's a newer stable version
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ env.ARTIFACT_PATH }}
